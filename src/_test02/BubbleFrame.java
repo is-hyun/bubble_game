@@ -44,13 +44,20 @@ public class BubbleFrame extends JFrame {
 
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_LEFT:
-                        player.left();
+                        if (!player.isLeft()) {
+                            player.left();
+                        }
                         break;
                     case KeyEvent.VK_RIGHT:
-                        player.right();
+                        if (!player.isRight()) {
+                            player.right();
+                        }
                         break;
                     case KeyEvent.VK_UP:
-                        player.up();
+                        // 점프 중 / 낙하 중이면 무시
+                        if (!player.isUp() && !player.isDown()) {
+                            player.up();
+                        }
                         break;
                 }
             }
