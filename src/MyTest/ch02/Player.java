@@ -17,6 +17,7 @@ public class Player extends JLabel implements Moveable {
     // 플레이어 속도
     private final int SPEED = 4;
     private final int JUMP_SPPED = 2;
+    private final int JUMP_HEIGHT = 65;
 
     // 플레이어 움직임 상태
     @Setter
@@ -48,7 +49,6 @@ public class Player extends JLabel implements Moveable {
         setSize(50, 50);
         setLocation(x, y);
         setIcon(playerR);
-        right = true;
     }
 
     @Override
@@ -105,42 +105,41 @@ public class Player extends JLabel implements Moveable {
 
     @Override
     public void up() {
-        if (up) {
+        if (up || down) {
             return;
         }
 
         up = true;
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (true) {
-                    for (int i = 0; i < 60; i++) {
-                        y -= JUMP_SPPED;
-                        setLocation(x, y);
-                        try {
-                            Thread.sleep(8);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    for (int i = 0; i < 60; i++) {
-                        y += JUMP_SPPED;
-                        setLocation(x, y);
-                        try {
-                            Thread.sleep(8);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    up = false;
+        new Thread(() -> {
+            for (int i =0; i < JUMP_HEIGHT; i++) {
+                y -= JUMP_SPPED;
+                setLocation(x, y);
+                try {
+                    Thread.sleep(5); // 낙하속도보다 느리게
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             }
+            up = false;
+            down();
         }).start();
     }
 
     @Override
     public void down() {
-
+        down = true;
+        new Thread(()-> {
+            for (int i =0; i < JUMP_HEIGHT; i++) {
+                y += JUMP_SPPED;
+                setLocation(x, y);
+                try {
+                    Thread.sleep(5); // 낙하속도보다 느리게
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            down = false;
+        }).start();
     }
 }
