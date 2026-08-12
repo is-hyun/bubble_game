@@ -28,7 +28,7 @@ public class Bubble extends JLabel implements Moveable {
 
         // 플레이어의 방향 상태에 따라 물방울 이동 방향 지정
         new Thread(() -> {
-            if (player.getPlayerWay() == PlayerWay.LEFT){
+            if (player.getPlayerWay() == PlayerWay.LEFT) {
                 left();
             } else if (player.getPlayerWay() == PlayerWay.RIGHT) {
                 right();
@@ -43,7 +43,7 @@ public class Bubble extends JLabel implements Moveable {
     private void setInitLayout() {
         x = player.getX();
         y = player.getY();
-        setSize(50,50);
+        setSize(50, 50);
         setLocation(x, y);
         setIcon(bubbleIcon);
     }
@@ -82,11 +82,16 @@ public class Bubble extends JLabel implements Moveable {
 
     @Override
     public void up() {
+        upMoving = true;
 
-    }
-
-    @Override
-    public void down() {
-        Moveable.super.down();
+        while (y > SCREEN_TOP) {
+            y--;
+            setLocation(x, y);
+            try {
+                Thread.sleep(BUBBLE_SPEED_MS);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
